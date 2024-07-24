@@ -1,0 +1,19 @@
+1. cd build/workspace/tpch
+2. Run python3.11 tpchgen.py generate --scale-factor 1 --partitions 1  -- it will create *.tbl files under data/ in current dir
+3. Run python3.11 tpchgen.py convert --scale-factor 1 --partitions 1   -- it will convert *.tbl to *.parquet
+4. cd ../../ --back to build/ folder level
+5. docker build -f docker/data-volume/Dockerfile -t data-container:tpch .   --build the data container locally.
+6. run docker compose up
+7. Take a terminal using jupyter launcher 
+
+spark-submit --master spark://a-spark-master:7077 \
+    --conf spark.executor.cores=1 \
+    --conf spark.driver.cores=1 \
+    --conf spark.executor.memory=512m \
+    --conf spark.driver.memory=512m \
+    --conf spark.executor.instances=2 \
+    --conf spark.cores.max=2 \
+    --packages org.apache.spark:spark-avro_2.12:3.2.1,io.delta:delta-core_2.12:2.3.0 \
+    tpch/tpcbench.py \
+    --benchmark tpch --data tpch/data --queries tpch/queries \
+    --run_id "2core_2exec_512mb"

@@ -1,0 +1,57 @@
+#services:
+#  service_name:
+#    image: image_name
+#    container_name: jupyterlab
+#    ports:
+#      - "host_port:container_port"
+# Change the container_name and host_port values to be unique and non-conflicting with other users services
+
+version: "3.6"
+volumes:
+  data:  
+services:
+  data-container:
+    image: data-container:tpch
+    container_name: data-container
+    volumes:
+      - data:/data
+    command: tail -f /dev/null  # Keep the container running
+  jupyterlab:
+    image: ars1001/jupyterlab
+    container_name: a-jupyterlab
+    ports:
+      - 18888:8888
+      - 14040:4040
+    volumes:
+      - data:/opt/workspace
+    depends_on:
+      - data-container
+  spark-master:
+    image: ars1001/spark-master
+    container_name: a-spark-master
+    ports:
+      - 18080:8080
+      - 17077:7077
+    volumes:
+      - data:/opt/workspace
+    depends_on:
+      - data-container  
+  spark-worker-1:
+    image: ars1001/spark-worker
+    container_name: a-spark-worker-1
+    ports:
+      - 18081:8081
+    volumes:
+      - data:/opt/workspace
+    depends_on:
+      - spark-master
+  spark-worker-2:
+    image: ars1001/spark-worker
+    container_name: a-spark-worker-2
+    ports:
+      - 18082:8081
+    volumes:
+      - data:/opt/workspace
+    depends_on:
+      - spark-master
+...
