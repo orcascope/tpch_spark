@@ -17,8 +17,13 @@ services:
       - data:/data
     command: tail -f /dev/null  # Keep the container running
   jupyterlab:
-    image: ars1001/jupyterlab
+    image: jupyterlab:latest
     container_name: a-jupyterlab
+    deploy:
+        resources:
+            limits:
+                cpus: '1'
+                memory: 1G
     ports:
       - 18888:8888
       - 14040:4040

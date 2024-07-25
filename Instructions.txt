@@ -17,3 +17,6 @@ spark-submit --master spark://a-spark-master:7077 \
     tpch/tpcbench.py \
     --benchmark tpch --data tpch/data --queries tpch/queries \
     --run_id "2core_2exec_512mb"
+
+use the jupyterlab container for running python duckdb 
+python  tpch/tpcbench-duck.py --benchmark tpch --data tpch/data --queries tpch/queries --run_id "ducktest"
