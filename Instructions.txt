@@ -1,10 +1,11 @@
+Download the repo to your local machine.
 1. cd build/workspace/tpch
 2. Run python3.11 tpchgen.py generate --scale-factor 1 --partitions 1  -- it will create *.tbl files under data/ in current dir
 3. Run python3.11 tpchgen.py convert --scale-factor 1 --partitions 1   -- it will convert *.tbl to *.parquet
 4. cd ../../ --back to build/ folder level
 5. docker build -f docker/data-volume/Dockerfile -t data-container:tpch .   --build the data container locally.
 6. run docker compose up
-7. Take a terminal using jupyter launcher 
+7.a docker exec into jupyterlab container and run spark-submit. Sample command given below.
 
 spark-submit --master spark://a-spark-master:7077 \
     --conf spark.executor.cores=1 \
@@ -18,5 +19,5 @@ spark-submit --master spark://a-spark-master:7077 \
     --benchmark tpch --data tpch/data --queries tpch/queries \
     --run_id "2core_2exec_512mb"
 
-use the jupyterlab container for running python duckdb 
+7.b docker exec to jupyterlab container for running python duckdb 
 python  tpch/tpcbench-duck.py --benchmark tpch --data tpch/data --queries tpch/queries --run_id "ducktest"
